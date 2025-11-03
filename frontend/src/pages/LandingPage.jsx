@@ -463,15 +463,15 @@ const LandingPage = () => {
             <div>
               <h4 className="font-semibold mb-4">Contact Info</h4>
               <ul className="space-y-2 text-gray-400">
-                <li>📞 +1 (555) 123-4567</li>
+                <li>📞 +63 9121234567</li>
                 <li>✉️ hello@cardealer.com</li>
-                <li>📍 123 Auto Street, Car City</li>
+                <li>📍 Bagumbayan, Roxas, Oriental Mindoro, Philippines</li>
               </ul>
             </div>
           </div>
           
           <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
-            <p>&copy; 2024 CarDealer. All rights reserved. Designed with ❤️ for car enthusiasts.</p>
+            <p>&copy; 2025 CarDealer. All rights reserved. Designed with ❤️ for car enthusiasts.</p>
           </div>
         </div>
       </footer>
