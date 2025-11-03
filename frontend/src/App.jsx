@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import LandingPage from './pages/LandingPage';
+import CarListing from './pages/CarListing';
 
 function App() {
   return (
@@ -10,6 +11,8 @@ function App() {
         <Navbar />
         <Routes>
           <Route path="/" element={<LandingPage />} />
+           <Route path="/cars" element={<CarListing />} />
+           {/* <Route path="/order" element={<OrderPage />} /> */}
         </Routes>
       </div>
     </Router>

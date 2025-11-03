@@ -1,16 +1,8 @@
 import React, { useState } from 'react';
 
-const SearchBar = ({ onSearch }) => {
+const SearchBar = ({ onSearch, filters, uniqueMakes, uniqueYears, uniqueFuelTypes, uniqueTransmissions }) => {
   const [searchTerm, setSearchTerm] = useState('');
-  const [filters, setFilters] = useState({
-    minPrice: '',
-    maxPrice: '',
-    year: '',
-    fuelType: ''
-  });
   const [showFilters, setShowFilters] = useState(false);
-
-  const fuelTypes = ['All', 'Gasoline', 'Diesel', 'Electric', 'Hybrid'];
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -18,21 +10,21 @@ const SearchBar = ({ onSearch }) => {
   };
 
   const handleFilterChange = (key, value) => {
-    setFilters(prev => ({
-      ...prev,
-      [key]: value
-    }));
+    const newFilters = { ...filters, [key]: value };
+    onSearch(searchTerm, newFilters);
   };
 
   const clearFilters = () => {
-    setFilters({
+    const clearedFilters = {
       minPrice: '',
       maxPrice: '',
       year: '',
-      fuelType: ''
-    });
+      fuelType: '',
+      transmission: '',
+      make: ''
+    };
     setSearchTerm('');
-    onSearch('', {});
+    onSearch('', clearedFilters);
   };
 
   return (
@@ -50,7 +42,7 @@ const SearchBar = ({ onSearch }) => {
             placeholder="Search by make, model, or features..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+            className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
           />
         </div>
         <div className="flex gap-3">
@@ -63,10 +55,13 @@ const SearchBar = ({ onSearch }) => {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.207A1 1 0 013 6.5V4z" />
             </svg>
             Filters
+            {Object.values(filters).some(val => val) && (
+              <span className="w-2 h-2 bg-cyan-500 rounded-full"></span>
+            )}
           </button>
           <button
             type="submit"
-            className="btn-primary px-8"
+            className="bg-cyan-600 hover:bg-cyan-700 text-white px-8 py-3 rounded-xl font-semibold transition-colors"
           >
             Search
           </button>
@@ -76,7 +71,22 @@ const SearchBar = ({ onSearch }) => {
       {/* Advanced Filters */}
       {showFilters && (
         <div className="border-t border-gray-200 pt-4 animate-fade-in">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-4">
+            {/* Make Filter */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Car Make</label>
+              <select
+                value={filters.make}
+                onChange={(e) => handleFilterChange('make', e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500"
+              >
+                <option value="">All Makes</option>
+                {uniqueMakes.map(make => (
+                  <option key={make} value={make}>{make}</option>
+                ))}
+              </select>
+            </div>
+
             {/* Price Range */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">Price Range</label>
@@ -86,14 +96,14 @@ const SearchBar = ({ onSearch }) => {
                   placeholder="Min"
                   value={filters.minPrice}
                   onChange={(e) => handleFilterChange('minPrice', e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500"
                 />
                 <input
                   type="number"
                   placeholder="Max"
                   value={filters.maxPrice}
                   onChange={(e) => handleFilterChange('maxPrice', e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500"
                 />
               </div>
             </div>
@@ -101,13 +111,16 @@ const SearchBar = ({ onSearch }) => {
             {/* Year */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">Year</label>
-              <input
-                type="number"
-                placeholder="Filter by year"
+              <select
                 value={filters.year}
                 onChange={(e) => handleFilterChange('year', e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
-              />
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500"
+              >
+                <option value="">All Years</option>
+                {uniqueYears.map(year => (
+                  <option key={year} value={year}>{year}</option>
+                ))}
+              </select>
             </div>
 
             {/* Fuel Type */}
@@ -116,12 +129,29 @@ const SearchBar = ({ onSearch }) => {
               <select
                 value={filters.fuelType}
                 onChange={(e) => handleFilterChange('fuelType', e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500"
               >
-                {fuelTypes.map(type => (
-                  <option key={type} value={type === 'All' ? '' : type}>
-                    {type}
-                  </option>
+                <option value="">All Fuel Types</option>
+                {uniqueFuelTypes.map(type => (
+                  <option key={type} value={type}>{type}</option>
+                ))}
+              </select>
+            </div>
+          </div>
+
+          {/* Second Row of Filters */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {/* Transmission */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Transmission</label>
+              <select
+                value={filters.transmission}
+                onChange={(e) => handleFilterChange('transmission', e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500"
+              >
+                <option value="">All Transmissions</option>
+                {uniqueTransmissions.map(trans => (
+                  <option key={trans} value={trans}>{trans}</option>
                 ))}
               </select>
             </div>
@@ -133,7 +163,7 @@ const SearchBar = ({ onSearch }) => {
                 onClick={clearFilters}
                 className="w-full px-4 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
               >
-                Clear All
+                Clear All Filters
               </button>
             </div>
           </div>
