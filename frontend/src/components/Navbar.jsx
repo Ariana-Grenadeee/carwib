@@ -27,15 +27,6 @@ const Navbar = () => {
   const navLinks = [
     { path: '/', label: 'Home' },
     { path: '/cars', label: 'Browse Cars' },
-    { 
-      label: 'Services',
-      submenu: [
-        { path: '/financing', label: 'Financing' },
-        { path: '/trade-in', label: 'Trade-In' },
-        { path: '/test-drive', label: 'Test Drive' },
-        { path: '/maintenance', label: 'Maintenance' }
-      ]
-    },
     { path: '/about', label: 'About' },
     { path: '/contact', label: 'Contact' },
   ];
